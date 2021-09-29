@@ -1,17 +1,7 @@
-require 'notion-ruby-client'
-require 'dotenv/load'
-require_relative "components/set_icons"
-require_relative "components/set_projects_progress"
+require_relative "notion_update_gtd_statuses"
+require 'byebug'
 
-def run
-  client = Notion::Client.new(token: ENV["SECRET_TOKEN"])
+NotionUpdateGtdStatuses.config.components << Components::SetProjectsProgress
 
-  components.each do |component|
-    component.new(client).call
-  end
-end
-
-def components
-  [Components::SetIcons, Components::SetProjectsProgress]
-end
+NotionUpdateGtdStatuses.run
 

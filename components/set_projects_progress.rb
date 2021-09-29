@@ -22,7 +22,7 @@ module Components
       {
         property: "Folder",
         select: {
-          equals: "Проекты"
+          equals: "Projects"
         }
       }
     end

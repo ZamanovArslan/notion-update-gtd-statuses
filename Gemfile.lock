@@ -2,7 +2,13 @@ GEM
   remote: https://rubygems.org/
   specs:
     byebug (11.1.3)
+    concurrent-ruby (1.1.9)
     dotenv (2.7.6)
+    dry-configurable (0.13.0)
+      concurrent-ruby (~> 1.0)
+      dry-core (~> 0.6)
+    dry-core (0.7.1)
+      concurrent-ruby (~> 1.0)
     faraday (1.8.0)
       faraday-em_http (~> 1.0)
       faraday-em_synchrony (~> 1.0)
@@ -38,6 +44,7 @@ PLATFORMS
 DEPENDENCIES
   byebug
   dotenv
+  dry-configurable
   notion-ruby-client
 
 BUNDLED WITH

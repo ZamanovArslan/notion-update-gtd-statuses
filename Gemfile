@@ -1,5 +1,6 @@
 source "https://rubygems.org"
 
 gem "notion-ruby-client"
-gem "byebug"
 gem "dotenv"
+gem "byebug"
+gem "dry-configurable"
