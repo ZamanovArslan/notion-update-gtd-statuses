@@ -1,0 +1,34 @@
+-
+  filter:
+    property: Folder
+    select:
+      equals: Next
+  icon:
+    type: external
+    external:
+      url: https://i.imgur.com/pKLdmO7.png
+-
+  filter:
+    property: Folder
+    select:
+      equals: Ожидание
+  icon:
+    type: emoji
+    emoji: 🕙
+-
+  filter:
+    property: Folder
+    select:
+      equals: Done
+  icon:
+    type: external
+    external:
+      url: https://i.imgur.com/B5e36Ag.png
+-
+  filter:
+    property: Folder
+    select:
+      equals: Когда-нибудь потом
+  icon:
+    type: emoji
+    emoji: 🔮
