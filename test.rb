@@ -1,3 +1,3 @@
-require_relative "lambda_function"
+require_relative "app"
 
-lambda_handler({event: :test, context: :test})
+run
