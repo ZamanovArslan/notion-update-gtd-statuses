@@ -6,7 +6,7 @@ module Components
       not_actual_progress_pages = project_pages.select do |page|
         page.properties["Progress"].rich_text.first.text.content != format_progress(done_percent(page))
       end
-      
+
       not_actual_progress_pages.map do |page|
         {
           page: page,
@@ -62,7 +62,18 @@ module Components
     end
 
     def format_progress(percent)
-      (ENV["PROGRESS_ICON_LEFT"] * (percent * 10).to_i).ljust(10, ENV["PROGRESS_ICON_RIGHT"])
+      progress_icon_left = case (percent * 10).to_i
+        when 0...3
+          ENV["PROGRESS_ICON_RED"]
+        when 3...5
+          ENV["PROGRESS_ICON_ORANGE"]
+        when 5...9
+          ENV["PROGRESS_ICON_YELLOW"]
+        when 9..10
+          ENV["PROGRESS_ICON_GREEN"]
+      end
+
+      (progress_icon_left * (percent * 10).to_i).ljust(10, ENV["PROGRESS_ICON_RIGHT"])
     end
   end
 end
