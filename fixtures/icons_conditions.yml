@@ -32,3 +32,12 @@
   icon:
     type: emoji
     emoji: 🔮
+-
+  filter:
+    property: Folder
+    select:
+      equals: Projects
+  icon:
+    type: emoji
+    emoji: 🗒️
+

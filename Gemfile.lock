@@ -36,6 +36,7 @@ GEM
       faraday (>= 1.0)
       faraday_middleware
       hashie
+    ruby-progressbar (1.11.0)
     ruby2_keywords (0.0.5)
 
 PLATFORMS
@@ -46,6 +47,7 @@ DEPENDENCIES
   dotenv
   dry-configurable
   notion-ruby-client
+  ruby-progressbar
 
 BUNDLED WITH
    2.2.27

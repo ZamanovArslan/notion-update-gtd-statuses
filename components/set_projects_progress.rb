@@ -2,13 +2,18 @@ require_relative "base_component"
 
 module Components
   class SetProjectsProgress < BaseComponent
-    def call
-      project_pages.each do |page|
-        formatted_progress = format_progress(done_percent(page))
-
-        if page.properties["Progress"].rich_text.first.text.content != formatted_progress
-          @client.update_page(id: page.id, properties: properties(formatted_progress))
-        end
+    def pages_with_properties_for_update
+      not_actual_progress_pages = project_pages.select do |page|
+        page.properties["Progress"].rich_text.first.text.content != format_progress(done_percent(page))
+      end
+      
+      not_actual_progress_pages.map do |page|
+        {
+          page: page,
+          new_properties: {
+            properties: properties(format_progress(done_percent(page)))
+          }
+        }
       end
     end
 
@@ -42,7 +47,8 @@ module Components
     end
 
     def done_percent(page)
-      finished_related_pages(page).count / related_pages(page).count.to_f
+      @done_percent ||= {}
+      @done_percent[page.id] ||= finished_related_pages(page).count / related_pages(page).count.to_f
     end
 
     def finished_related_pages(page)
