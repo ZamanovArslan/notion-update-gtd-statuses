@@ -49,7 +49,6 @@ module Components
     end
 
     def done_percent(page)
-      debugger
       @done_percent ||= {}
       @done_percent[page.id] ||= finished_related_pages(page).count / related_pages(page).count.to_f
     end
