@@ -4,6 +4,8 @@ module Components
   class SetProjectsProgress < BaseComponent
     def pages_with_properties_for_update
       not_actual_progress_pages = project_pages.select do |page|
+        next true if page.properties["Progress"].rich_text.empty?
+
         page.properties["Progress"].rich_text.first.text.content != format_progress(done_percent(page))
       end
 
@@ -47,6 +49,7 @@ module Components
     end
 
     def done_percent(page)
+      debugger
       @done_percent ||= {}
       @done_percent[page.id] ||= finished_related_pages(page).count / related_pages(page).count.to_f
     end
