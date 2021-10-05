@@ -1,9 +1,10 @@
-require 'yaml'
+require "yaml"
 require_relative "base_component"
+require_relative "../lib/page"
 
 module Components
   class SetIcons < BaseComponent
-    def pages_with_properties_for_update
+    def get_pages
       filters_with_icons = YAML.load_file("fixtures/icons_conditions.yml")
 
       filters_with_icons.flat_map do |item|
@@ -14,12 +15,12 @@ module Components
         end
 
         pages.map do |page|
-          {
+          Page.new(
             page: page,
-            new_properties: {
+            new_props: {
               icon: item["icon"]
             }
-          }
+          )
         end
       end
     end

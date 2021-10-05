@@ -1,8 +1,9 @@
 require_relative "base_component"
+require_relative "../lib/page"
 
 module Components
   class SetProjectsProgress < BaseComponent
-    def pages_with_properties_for_update
+    def get_pages
       not_actual_progress_pages = project_pages.select do |page|
         next true if page.properties["Progress"].rich_text.empty?
 
@@ -10,12 +11,12 @@ module Components
       end
 
       not_actual_progress_pages.map do |page|
-        {
+        Page.new(
           page: page,
-          new_properties: {
+          new_props: {
             properties: properties(format_progress(done_percent(page)))
           }
-        }
+        )
       end
     end
 
