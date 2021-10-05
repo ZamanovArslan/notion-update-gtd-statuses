@@ -4,13 +4,7 @@ require_relative "../lib/page"
 module Components
   class SetProjectsProgress < BaseComponent
     def get_pages
-      not_actual_progress_pages = project_pages.select do |page|
-        next true if page.properties["Progress"].rich_text.empty?
-
-        page.properties["Progress"].rich_text.first.text.content != format_progress(done_percent(page))
-      end
-
-      not_actual_progress_pages.map do |page|
+      pages_with_not_actual_progress.map do |page|
         Page.new(
           page: page,
           new_props: {
@@ -21,6 +15,29 @@ module Components
     end
 
     private
+
+    def pages_with_not_actual_progress
+      mutex = Mutex.new
+      pages = []
+      @done_percent = {}
+
+      ENV["THREADS_COUNT"].to_i.times.map do
+        Thread.new(project_pages, pages) do |project_pages, pages|
+          while project_page = mutex.synchronize { project_pages.pop }
+            page_done_percent = calculate_done_percent(project_page)
+
+            mutex.synchronize do
+              @done_percent[project_page.id] = page_done_percent
+
+              pages << project_page if project_page.properties["Progress"].rich_text.empty? ||
+                project_page.properties["Progress"].rich_text.first.text.content != format_progress(page_done_percent)
+            end
+          end
+        end
+      end.each(&:join)
+
+      pages
+    end
 
     def project_pages
       @project_pages ||= client.database_query(id: ENV["DATABASE_ID"], filter: filter).results
@@ -49,15 +66,31 @@ module Components
       }
     end
 
+    def calculate_done_percent(page)
+      finished_related_pages(page).count / related_pages(page).count.to_f
+    end
+
     def done_percent(page)
-      @done_percent ||= {}
-      @done_percent[page.id] ||= finished_related_pages(page).count / related_pages(page).count.to_f
+      @done_percent[page.id]
     end
 
     def finished_related_pages(page)
-      related_pages(page).select do |page|
-        @client.page(id: page.id).properties["Folder"]["select"].name == "Done"
-      end
+      client.database_query(id: ENV["DATABASE_ID"], filter: {
+        and: [
+          {
+            property: "Folder",
+            select: {
+              equals: "Done"
+            }
+          },
+          {
+            property: "Родительская задача",
+            relation: {
+              contains: page.id
+            }
+          }
+        ]
+      }).results
     end
 
     def related_pages(page)

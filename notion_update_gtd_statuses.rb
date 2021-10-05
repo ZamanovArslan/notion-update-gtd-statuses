@@ -26,7 +26,7 @@ class NotionUpdateGtdStatuses
   def self.update_pages_parallel(pages, progressbar)
     mutex = Mutex.new
 
-    8.times.map do
+    ENV["THREADS_COUNT"].to_i.times.map do
       Thread.new(pages) do |pages|
         while page = mutex.synchronize { pages.pop }
           config.notion_client.update_page(id: page.id, **page.new_props)
@@ -43,7 +43,7 @@ class NotionUpdateGtdStatuses
     mutex = Mutex.new
     pages = []
 
-    8.times.map do
+    ENV["THREADS_COUNT"].to_i.times.map do
       Thread.new(config.components, pages) do |components, pages|
         while component = mutex.synchronize { components.pop }
           new_pages = component.new(config.notion_client).get_pages
