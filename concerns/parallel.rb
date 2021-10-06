@@ -1,4 +1,4 @@
-require "thread"  # for Mutex
+require "thread"
 
 module Parallel
   def iterate_over_parallel(iterable)

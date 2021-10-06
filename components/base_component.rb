@@ -1,6 +1,3 @@
-require "ruby-progressbar"
-require "byebug"
-
 module Components
   class BaseComponent
     attr_reader :client

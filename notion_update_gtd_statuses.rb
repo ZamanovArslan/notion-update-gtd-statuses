@@ -1,6 +1,7 @@
 require "notion-ruby-client"
 require "dotenv/load"
 require "dry-configurable"
+require "ruby-progressbar"
 require_relative "components/set_icons"
 require_relative "components/set_projects_progress"
 require_relative "lib/updates_optimizer"
@@ -33,6 +34,7 @@ class NotionUpdateGtdStatuses
         pages.concat new_pages
       end
     end
+
     pages
   end
 
