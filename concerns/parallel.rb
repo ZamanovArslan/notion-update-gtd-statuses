@@ -12,15 +12,4 @@ module Parallel
       end
     end.each(&:join)
   end
-
-  def summarize_parallel(iterable)
-    mutex = Mutex.new
-    result = []
-    
-    iterate_over_parallel(iterable) do
-      mutex.synchronize { result.concat(yield(mutex, element)) }
-    end
-
-    result
-  end
 end
