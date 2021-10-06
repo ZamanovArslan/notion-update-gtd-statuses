@@ -9,5 +9,9 @@ module Components
     def get_pages
       raise NotImplementedError
     end
+
+    def self.name
+      self.to_s.split("::").last
+    end
   end
 end

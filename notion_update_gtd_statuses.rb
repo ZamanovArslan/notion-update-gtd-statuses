@@ -11,7 +11,7 @@ class NotionUpdateGtdStatuses
   extend Dry::Configurable
   extend Parallel
 
-  setting :components, [Components::SetIcons]
+  setting :components, [Components::SetIcons, Components::SetProjectsProgress]
   setting :notion_client, Notion::Client.new(token: ENV["SECRET_TOKEN"])
 
   def self.run
@@ -34,7 +34,7 @@ class NotionUpdateGtdStatuses
         pages.concat new_pages
       end
     end
-    
+
     pages
   end
 
