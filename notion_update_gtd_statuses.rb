@@ -34,7 +34,7 @@ class NotionUpdateGtdStatuses
         pages.concat new_pages
       end
     end
-
+    
     pages
   end
 
