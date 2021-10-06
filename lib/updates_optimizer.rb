@@ -1,4 +1,3 @@
-require "byebug"
 class UpdatesOptimizer
   attr_reader :pages
 

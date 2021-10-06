@@ -1,14 +1,17 @@
 require_relative "base_component"
 require_relative "../lib/page"
+require_relative "../concerns/parallel"
 
 module Components
   class SetProjectsProgress < BaseComponent
+    include Parallel
+
     def get_pages
       pages_with_not_actual_progress.map do |page|
         Page.new(
           page: page,
           new_props: {
-            properties: properties(format_progress(done_percent(page)))
+            properties: properties(format_progress(@done_percent[page.id]))
           }
         )
       end
@@ -17,24 +20,19 @@ module Components
     private
 
     def pages_with_not_actual_progress
-      mutex = Mutex.new
       pages = []
       @done_percent = {}
 
-      ENV["THREADS_COUNT"].to_i.times.map do
-        Thread.new(project_pages, pages) do |project_pages, pages|
-          while project_page = mutex.synchronize { project_pages.pop }
-            page_done_percent = calculate_done_percent(project_page)
+      iterate_over_parallel(project_pages) do |mutex, project_page|
+        page_done_percent = calculate_done_percent(project_page)
 
-            mutex.synchronize do
-              @done_percent[project_page.id] = page_done_percent
+        mutex.synchronize do
+          @done_percent[project_page.id] = page_done_percent
 
-              pages << project_page if project_page.properties["Progress"].rich_text.empty? ||
-                project_page.properties["Progress"].rich_text.first.text.content != format_progress(page_done_percent)
-            end
-          end
+          pages << project_page if project_page.properties["Progress"].rich_text.empty? ||
+            project_page.properties["Progress"].rich_text.first.text.content != format_progress(page_done_percent)
         end
-      end.each(&:join)
+      end
 
       pages
     end
@@ -68,10 +66,6 @@ module Components
 
     def calculate_done_percent(page)
       finished_related_pages(page).count / related_pages(page).count.to_f
-    end
-
-    def done_percent(page)
-      @done_percent[page.id]
     end
 
     def finished_related_pages(page)
